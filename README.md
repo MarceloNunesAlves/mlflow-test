@@ -41,6 +41,8 @@ Publicação do modelo no ML Flow.
 python examples/sklearn_logistic_regression/train.py
 ```
 
+Para visualizar o desempenho do modelo acesse a URL: http://localhost:5000/.
+
 ## Criar e testar o serviço REST do modelo publicado
 
 Gerar um microserviço do modelo.
