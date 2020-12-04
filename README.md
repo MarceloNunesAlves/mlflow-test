@@ -41,7 +41,7 @@ Publicação do modelo no ML Flow.
 python examples/sklearn_logistic_regression/train.py
 ```
 
-## Criação e teste do serviço REST do modelo publicado
+## Criar e testar o serviço REST do modelo publicado
 
 Gerar um microserviço do modelo.
 
