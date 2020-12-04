@@ -16,13 +16,13 @@ Para este teste simples é importante que o ambiente do python possua todos os p
 
 Para criar um ambiente python com os pacotes necessários.
 
-Para criar o ambiente
+Criar o ambiente no Anaconda
 ```
 conda create -n mlflow_env
 conda activate mlflow_env
 ```
 
-Para instalar os pacotes
+Instalar os pacotes
 ```
 conda install python
 pip install mlflow
