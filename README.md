@@ -29,7 +29,7 @@ pip install mlflow
 pip install sklearn
 ```
 
-Configuração da variável do ambiente para ser usado na execução do script e a geração do REST.
+Configuração da variável do ambiente para ser usado na execução do script e na geração do REST.
 
 ```
 export MLFLOW_TRACKING_URI=http://localhost:5000
