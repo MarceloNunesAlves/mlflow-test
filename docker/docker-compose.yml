@@ -1,6 +1,36 @@
 version: '3.3'
 
 services:
+    ftp_server:
+        build: ./ftp
+        image: alpine-ftp-server
+        container_name: ftp_server
+        environment:
+            - USERS=ftp_user|pwd@!234
+            - ADDRESS=ftp.mlflow
+        ports:
+            - "21:21"
+            - "21000-21010:21000-21010"
+        networks:
+            - frontend
+            - backend
+
+    db:
+        restart: always
+        image: mysql/mysql-server:5.7.28
+        container_name: mlflow_db
+        expose:
+            - "3306"
+        networks:
+            - backend
+        environment:
+            - MYSQL_DATABASE=mlflow_db
+            - MYSQL_USER=mlflow_db_user
+            - MYSQL_PASSWORD=mlflow_db_user
+            - MYSQL_ROOT_PASSWORD=mlflow_db_root
+        volumes:
+            - dbdata:/var/lib/mysql
+
     web:
         restart: always
         build: ./mlflow
@@ -11,9 +41,11 @@ services:
         networks:
             - frontend
             - backend
-        command: mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root ./artifacts --host 0.0.0.0
         volumes:
-             - dbmodel:/artifacts
+            - dbmodel:/opt/mlflow
+        depends_on:
+            - db
+            - ftp_server
 
     nginx:
         restart: always
@@ -35,3 +67,4 @@ networks:
 
 volumes:
     dbmodel:
+    dbdata:
