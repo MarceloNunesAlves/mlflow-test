@@ -4,8 +4,7 @@ from sklearn.linear_model import LogisticRegression
 import mlflow
 import mlflow.sklearn
 
-mlflow.set_tracking_uri("http://localhost")
-#MLFLOW_TRACKING_URI
+mlflow.set_tracking_uri("http://localhost:5000")
 
 print(mlflow.get_tracking_uri())
 print(mlflow.get_artifact_uri())

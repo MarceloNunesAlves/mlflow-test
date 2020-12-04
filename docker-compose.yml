@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
     ftp_server:
-        build: ./ftp
+        build: ./docker/ftp
         image: ubuntu-ftp-server
         container_name: ftp_server
         environment:
@@ -13,7 +13,6 @@ services:
             - "21:21"
             - "47400-47470:47400-47470"
         networks:
-            - frontend
             - backend
 
     db:
@@ -34,13 +33,12 @@ services:
 
     web:
         restart: always
-        build: ./mlflow
+        build: ./docker/mlflow
         image: mlflow_server
         container_name: mlflow_server
-        expose:
-            - "5000"
+        ports:
+            - "5000:5000"
         networks:
-            - frontend
             - backend
         volumes:
             - dbmodel:/opt/mlflow
@@ -48,21 +46,7 @@ services:
             - db
             - ftp_server
 
-    nginx:
-        restart: always
-        build: ./nginx
-        image: mlflow_nginx
-        container_name: mlflow_nginx
-        ports:
-            - "80:80"
-        networks:
-            - frontend
-        depends_on:
-            - web
-
 networks:
-    frontend:
-        driver: bridge
     backend:
         driver: bridge
 
