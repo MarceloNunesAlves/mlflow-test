@@ -24,4 +24,4 @@ WORKDIR ${MLFLOW_HOME}
 
 USER root
 
-ENTRYPOINT mlflow server --backend-store-uri mysql+pymysql://mlflow_db_user:mlflow_db_user@db:3306/mlflow_db --default-artifact-root ftp://ftp_user:pwd@!234@ftp_server:21/ftp/ftp_user --host ${SERVER_HOST} --port ${SERVER_PORT}
+ENTRYPOINT mlflow server --backend-store-uri mysql+pymysql://mlflow_db_user:mlflow_db_user@db:3306/mlflow_db --default-artifact-root ftp://user_ftp:pwd@!234@ftp_server:21/home/vsftpd --host ${SERVER_HOST} --port ${SERVER_PORT}

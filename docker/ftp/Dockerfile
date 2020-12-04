@@ -1,13 +1,22 @@
-FROM alpine:3.10
-RUN apk --no-cache add vsftpd
+FROM ubuntu:latest
 
-COPY start_vsftpd.sh /bin/start_vsftpd.sh
-COPY vsftpd.conf /etc/vsftpd/vsftpd.conf
+RUN apt-get update && \
+		apt-get install -y --no-install-recommends vsftpd db-util && \
+		apt-get clean
 
-EXPOSE 21 21000-21010
+ENV FTP_USER admin
+ENV FTP_PASS admin
 
-#RUN addgroup -S ftp_user && adduser -S ftp_user -G ftp_user
+COPY vsftpd.conf /etc/vsftpd/
+COPY vsftpd_virtual /etc/pam.d/
+COPY run-vsftpd.sh /usr/sbin/
 
-VOLUME /ftp
+RUN chmod +x /usr/sbin/run-vsftpd.sh && \
+		mkdir -p /var/run/vsftpd/empty
 
-ENTRYPOINT ["/bin/start_vsftpd.sh"]
+VOLUME /home/vsftpd
+VOLUME /var/log/vsftpd
+
+EXPOSE 20 21
+
+CMD ["/usr/sbin/run-vsftpd.sh"]

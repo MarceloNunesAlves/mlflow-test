@@ -3,14 +3,15 @@ version: '3.3'
 services:
     ftp_server:
         build: ./ftp
-        image: alpine-ftp-server
+        image: ubuntu-ftp-server
         container_name: ftp_server
         environment:
-            - USERS=ftp_user|pwd@!234
-            - ADDRESS=ftp.mlflow
+            - FTP_USER=user_ftp
+            - FTP_PASS=pwd@!234
         ports:
+            - "20:20"
             - "21:21"
-            - "21000-21010:21000-21010"
+            - "47400-47470:47400-47470"
         networks:
             - frontend
             - backend
