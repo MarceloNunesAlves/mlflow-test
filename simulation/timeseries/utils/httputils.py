@@ -1,16 +1,16 @@
 import base64
 
 '''
-    Criação de chave
+    Criação de chave no Elastic
     POST /_security/api_key
     {
       "name": "my-api-key"
     }
 
     key = {
-        "id": "KHn-d3MBymALMAq3ILJz",
+        "id": "XXXXXXXXXXXXXXXXXXXX",
         "name": "my-api-key",
-        "api_key": "TMYe_g0IRjSNacE91d-Ojg"
+        "api_key": "YYYYYYYYYYYYYYYYY"
     }
 '''
 
