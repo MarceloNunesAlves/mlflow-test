@@ -13,7 +13,7 @@ services:
             - "21:21"
             - "47400-47470:47400-47470"
         networks:
-            - backend
+            - mltest
 
     db:
         restart: always
@@ -22,7 +22,7 @@ services:
         expose:
             - "3306"
         networks:
-            - backend
+            - mltest
         environment:
             - MYSQL_DATABASE=mlflow_db
             - MYSQL_USER=mlflow_db_user
@@ -39,17 +39,40 @@ services:
         ports:
             - "5000:5000"
         networks:
-            - backend
+            - mltest
         volumes:
             - dbmodel:/opt/mlflow
         depends_on:
             - db
             - ftp_server
 
+    elastic:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+        container_name: elastic
+        environment:
+            - discovery.type=single-node
+        ports:
+            - "9200:9200"
+        networks:
+            - mltest
+        volumes:
+            - elasticdb:/usr/share/elasticsearch/data
+
+    kibana:
+        image: docker.elastic.co/kibana/kibana:7.10.0
+        container_name: kibana
+        ports:
+            - "5601:5601"
+        networks:
+            - mltest
+        depends_on:
+            - elastic
+
 networks:
-    backend:
+    mltest:
         driver: bridge
 
 volumes:
     dbmodel:
     dbdata:
+    elasticdb:
