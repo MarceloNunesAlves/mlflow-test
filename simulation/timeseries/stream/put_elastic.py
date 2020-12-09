@@ -19,7 +19,7 @@ def sendDataElastic(envio, index):
 
 def sendBulkElastic(envio):
     params = envio
-    headers = httputils.setHeaders(user, senha, "application/x-ndjson")
+    headers = httputils.setHeaders("application/x-ndjson")
 
     conn = None
     if (user and senha):

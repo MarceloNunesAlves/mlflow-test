@@ -14,14 +14,11 @@ import base64
     }
 '''
 
-def setHeaders(key, contextType):
-
-    senha = "ApiKey " + base64.b64encode((key['id'] + ':' + key['api_key']).encode()).decode("utf-8")
+def setHeaders(contextType):
 
     headers = {
         "Content-type": contextType,
-        "Accept": "application/json",
-        "Authorization": senha
+        "Accept": "application/json"
     }
 
     return headers

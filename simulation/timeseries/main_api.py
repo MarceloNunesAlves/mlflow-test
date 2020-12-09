@@ -5,6 +5,7 @@ from stream import loaddata
 from stream import historico
 from stream import db_mem
 from utils import hashutils
+import threading
 import json
 import random
 
@@ -12,7 +13,10 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return "Job de envio de dados - Elastic!"
+    threads = ''
+    for thread in threading.enumerate():
+        threads += thread.name + '\n'
+    return "Envio de dados no AR.\n\nThreads em execução:\n" + threads
 
 
 @app.route('/', methods=['POST'])

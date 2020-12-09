@@ -4,8 +4,8 @@ from datetime import datetime
 
 def getDados(amplitude):
     periodo = (2*math.pi)/1440 # 1440=Quantidade de minutos no dia
-    data_file =  pd.DataFrame(data={"tempo":[val for val in range(1,1440)],
-                                    "valor":[((periodo*math.sin(val*amplitude))+(amplitude*1.5)) for val in range(1,1440)]})
+    data_file =  pd.DataFrame(data={"tempo":[val for val in range(1,1441)],
+                                    "valor":[((periodo*math.sin(val*amplitude))+(amplitude*1.5)) for val in range(1,1441)]})
     return data_file
 
 def getValor(df, agora):
