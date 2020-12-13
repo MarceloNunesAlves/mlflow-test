@@ -6,3 +6,6 @@ elasticsearch==7.10.0
 matplotlib==3.3.3
 mlflow==1.12.1
 urllib3==1.25.10
+fbprophet==0.7.1
+kafka-python==2.0.2
+faust==1.10.4

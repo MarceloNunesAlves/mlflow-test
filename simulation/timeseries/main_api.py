@@ -5,11 +5,17 @@ from stream import loaddata
 from stream import historico
 from stream import db_mem
 from utils import hashutils
+from kafka.admin import KafkaAdminClient, NewTopic
 import threading
 import json
 import random
 
 app = Flask(__name__)
+
+admin_client = KafkaAdminClient(
+    bootstrap_servers="localhost:9092",
+    client_id='test'
+)
 
 @app.route('/')
 def index():
@@ -53,18 +59,35 @@ def incluirElemento():
         # Nao sera processado historico
         pass
 
-    jobScheduler.startEvent(dados, intervalo, requisicao['chave'], random.uniform(-10, 10), index)
+    jobScheduler.startEvent(dados, intervalo, requisicao['chave'], random.uniform(0-((5*amplitude)/100),((5*amplitude)/100)), index)
     return "Job enviado para o Elasticsearch!"
 
 
 @app.route('/', methods=['PUT'])
 def gerarOutlier():
     requisicao = request.get_json(force=True)
+
+    index = None
+    try:
+        index = requisicao['index']
+    except:
+        # Indice nao informado
+        index = 'dados'
+
     chave = json.dumps(requisicao['chave'])
-    db_mem.gerarOutlier(hashutils.gerarHash(chave))
+
+    db_mem.gerarOutlier(hashutils.gerarHash(chave), index)
     return "Outlier registrado: " + chave
 
+def initKafka():
+    topics = []
+    topics.append(NewTopic(name="topic_test", num_partitions=1, replication_factor=1))
+    try:
+        admin_client.create_topics(new_topics=topics, validate_only=False)
+    except:
+        pass #Já existe o topico
 
 if __name__ == '__main__':
     db_mem.initDb()
+    initKafka()
     app.run(host="0.0.0.0", port=5001)
