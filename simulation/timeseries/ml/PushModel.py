@@ -30,10 +30,8 @@ class FbProphetWrapper(mlflow.pyfunc.PythonModel):
         from fbprophet import Prophet
         return
 
-    #Alterar
     def predict(self, context, model_input):
-        future = self.model.make_future_dataframe(periods=model_input["periods"][0])
-        return self.model.predict(future)
+        return self.model.predict(model_input)
 
 def key_model(data):
     ret = 'model'
@@ -42,7 +40,7 @@ def key_model(data):
 
     return ret
 
-def train_model(df, _name):
+def train_model(df, _name, _entity):
         warnings.filterwarnings("ignore")
         np.random.seed(40)
 
@@ -67,15 +65,13 @@ def train_model(df, _name):
             for index, row in df_p_mean.iterrows():
                 mlflow.log_metric("rmse", row.rmse)
                 mlflow.log_metric("mape", row.mape)
-            #MSE
-            #MAE
-            #MDAPE
-            #COVERAGE
+                mlflow.log_metric("mse", row.mse)
+                mlflow.log_metric("mae", row.mae)
 
             mlflow.pyfunc.log_model(_name, python_model=FbProphetWrapper(m))
 
-            model_uri = "runs:/{run_id}/model".format(run_id=mlflow.active_run().info.run_id)
+            model_uri = "runs:/{run_id}/{key}".format(run_id=mlflow.active_run().info.run_id, key=_name)
 
             print("Logged model with URI: {uri}".format(uri=model_uri))
 
-            db_mem.gerarModel(_name, model_uri)
+            db_mem.gerarModel(_entity, model_uri)

@@ -4,7 +4,7 @@ from stream import jobScheduler
 from stream import loaddata
 from stream import historico
 from stream import db_mem
-from utils import hashutils
+from utils import hashutils, numutils
 from kafka.admin import KafkaAdminClient, NewTopic
 import threading
 import json
@@ -53,13 +53,13 @@ def incluirElemento():
     try:
         # Execução em paralelo - Envio para o elastic do historico
         thread = historico.TaskHistorico(dados, requisicao['chave'], intervalo, index,
-                                         int(requisicao['historico_em_dias']))
+                                         int(requisicao['historico_em_dias']), amplitude)
         thread.start()
     except:
         # Nao sera processado historico
         pass
 
-    jobScheduler.startEvent(dados, intervalo, requisicao['chave'], random.uniform(0-((5*amplitude)/100),((5*amplitude)/100)), index)
+    jobScheduler.startEvent(dados, intervalo, requisicao['chave'], 0, index) #numutils.calcRandom(amplitude)
     return "Job enviado para o Elasticsearch!"
 
 
@@ -74,9 +74,16 @@ def gerarOutlier():
         # Indice nao informado
         index = 'dados'
 
+    indice_aplicado = None
+    try:
+        indice_aplicado = requisicao['indice_aplicado']
+    except:
+        # Valor nao informado
+        indice_aplicado = 3 # 3 vezes o valor
+
     chave = json.dumps(requisicao['chave'])
 
-    db_mem.gerarOutlier(hashutils.gerarHash(chave), index)
+    db_mem.gerarOutlier(hashutils.gerarHash(chave), index, indice_aplicado)
     return "Outlier registrado: " + chave
 
 def initKafka():
