@@ -33,14 +33,7 @@ class FbProphetWrapper(mlflow.pyfunc.PythonModel):
     def predict(self, context, model_input):
         return self.model.predict(model_input)
 
-def key_model(data):
-    ret = 'model'
-    for key, value in data.items():
-        ret = ret + '_' + key + '_' + value
-
-    return ret
-
-def train_model(df, _name, _entity):
+def train_model(df, _name, _entity, _index):
         warnings.filterwarnings("ignore")
         np.random.seed(40)
 
@@ -74,4 +67,4 @@ def train_model(df, _name, _entity):
 
             print("Logged model with URI: {uri}".format(uri=model_uri))
 
-            db_mem.gerarModel(_entity, model_uri)
+            db_mem.gerarModel(_entity, model_uri, _index)

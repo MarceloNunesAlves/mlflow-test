@@ -59,7 +59,7 @@ def incluirElemento():
         # Nao sera processado historico
         pass
 
-    jobScheduler.startEvent(dados, intervalo, requisicao['chave'], 0, index) #numutils.calcRandom(amplitude)
+    jobScheduler.startEvent(dados, intervalo, requisicao['chave'], amplitude, index)
     return "Job enviado para o Elasticsearch!"
 
 

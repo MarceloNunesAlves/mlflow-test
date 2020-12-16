@@ -17,9 +17,12 @@ from stream import db_mem, alarm, put_elastic
 from utils import hashutils
 from kafka import KafkaConsumer
 from json import loads
+import warnings
 import pandas as pd
 import mlflow.pyfunc
 import json
+
+warnings.filterwarnings("ignore")
 
 mlflow.set_tracking_uri("http://localhost:5000")
 
@@ -39,14 +42,15 @@ for message in consumer:
     data = message.get('data').replace('Z','')
     #Valor recebido no kafka
     metric = message.get('metric')
+    #A tabela que foi armazenada
+    index = message.get('index')
 
     #Removendo atributos para gerar a chave
     message.pop('metric', None)
     message.pop('data', None)
+    message.pop('index', None)
 
-    message = hashutils.gerarHash(json.dumps(message))
-
-    model_uri = db_mem.getModel(message)
+    model_uri = db_mem.getModel(hashutils.gerarHash(json.dumps(message)), index)
 
     print('Model: {}'.format(model_uri))
 
@@ -61,12 +65,12 @@ for message in consumer:
         limite_superior = out["yhat_upper"][0]
 
         if(metric < limite_inferior):
-            envio = alarm.generateAlarm(metric, valor_esperado, limite_inferior, data)
+            envio = alarm.generateAlarm(metric, valor_esperado, limite_inferior, data, message)
             put_elastic.sendBulkElastic(envio)
             print('Anomolia gerada: {}'.format(envio))
 
         if(metric > limite_superior):
-            envio = alarm.generateAlarm(metric, valor_esperado, limite_superior, data)
+            envio = alarm.generateAlarm(metric, valor_esperado, limite_superior, data, message)
             put_elastic.sendBulkElastic(envio)
             print('Anomolia gerada: {}'.format(envio))
     except:

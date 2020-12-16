@@ -2,15 +2,16 @@ import threading
 from stream import loaddata
 from stream import put_elastic
 from stream import db_mem
-from utils import hashutils, dateutils
+from utils import hashutils, dateutils, numutils
 import json
 from kafka import KafkaProducer
 
-def startEvent(_dados, intervalo, body, randVal, index):
-    threading.Timer(intervalo, startEvent, [_dados, intervalo, body, randVal, index]).start() #Executa a cada um minuto
+def startEvent(_dados, intervalo, body, amplitude, index):
+    threading.Timer(intervalo, startEvent, [_dados, intervalo, body, amplitude, index]).start() #Executa a cada um minuto
     if body != None:
         body.pop('metric', None)
         body.pop('data', None)
+        body.pop('index', None)
 
         outlier, indice_aplicado = db_mem.getOutlier(hashutils.gerarHash(json.dumps(body)), index)
         agora = dateutils.dataAtual()
@@ -20,10 +21,12 @@ def startEvent(_dados, intervalo, body, randVal, index):
             db_mem.removerOutlier(hashutils.gerarHash(json.dumps(body)), index)
             body["metric"] = valor * indice_aplicado
         else:
-            body["metric"] = valor + randVal
+            body["metric"] = valor + numutils.calcRandom(amplitude, _perc_random=2)
 
         body["data"] = agora.strftime("%Y-%m-%dT%H:%M:%SZ")
         res = put_elastic.sendDataElastic(body, index)
+
+        body["index"] = index
 
         producer = KafkaProducer(bootstrap_servers='localhost:9092', \
                                  value_serializer=lambda v: json.dumps(body).encode('utf-8'))
