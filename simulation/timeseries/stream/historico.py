@@ -25,10 +25,11 @@ class TaskHistorico(threading.Thread):
 
     def run(self):
 
-        if(self._intervalo>0):
+        if(self._historico_em_dias>0):
 
-            randVal = numutils.calcRandom(self._amplitude)
             freqCalc = str(self._intervalo) + 'S'
+
+            elk = put_elastic.ManagerElastic()
 
             envio = ''
             count = 1
@@ -36,9 +37,9 @@ class TaskHistorico(threading.Thread):
             metrics = []
             datas = []
 
-            for new_date in pd.date_range(end=dateutils.dataAtual(), periods=(self._historico_em_dias*24*60), freq=freqCalc):
+            for new_date in pd.date_range(end=dateutils.dateutils().dataAtual(), periods=(self._historico_em_dias*24*60), freq=freqCalc):
                 valor = loaddata.getValor(self._dados, new_date)
-                self._json["metric"] = valor + randVal
+                self._json["metric"] = valor + numutils.calcRandom(self._amplitude, 10)
                 self._json["data"] = new_date.strftime("%Y-%m-%dT%H:%M:%SZ")
 
                 metrics.append(self._json["metric"])
@@ -49,14 +50,13 @@ class TaskHistorico(threading.Thread):
 
                 if count > 300:
                     print("Envio do historico -> " + new_date.strftime("%Y-%m-%d"))
-                    put_elastic.sendBulkElastic(envio)
-                    randVal = numutils.calcRandom(self._amplitude, _perc_random=20)
+                    elk.sendBulkElastic(envio)
                     envio = ''
                     count = 0
 
                 count += 1
 
-            put_elastic.sendBulkElastic(envio)
+            elk.sendBulkElastic(envio)
 
             print('Fim do processo de geracao do historico...')
 

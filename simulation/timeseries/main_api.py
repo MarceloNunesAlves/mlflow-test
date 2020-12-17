@@ -52,14 +52,14 @@ def incluirElemento():
 
     try:
         # Execução em paralelo - Envio para o elastic do historico
-        thread = historico.TaskHistorico(dados, requisicao['chave'], intervalo, index,
+        thread = historico.TaskHistorico(dados, requisicao['chave'].copy(), intervalo, index,
                                          int(requisicao['historico_em_dias']), amplitude)
         thread.start()
     except:
         # Nao sera processado historico
         pass
 
-    jobScheduler.startEvent(dados, intervalo, requisicao['chave'], amplitude, index)
+    jobScheduler.startEvent(dados, intervalo, requisicao['chave'].copy(), amplitude, index)
     return "Job enviado para o Elasticsearch!"
 
 

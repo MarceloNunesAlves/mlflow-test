@@ -1,5 +1,6 @@
 import pandas as pd
 import math
+import json
 from datetime import datetime
 
 def getDados(amplitude):

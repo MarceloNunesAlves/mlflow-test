@@ -2,44 +2,48 @@ from datetime import datetime
 from datetime import timedelta
 import pandas as pd
 
-def days_between(d1, d2):
-    return abs((d2 - d1).days) > 0
+class dateutils():
+    def __init__(self):
+        pass
 
-def numDaysBetween(d1, d2):
-    return abs((d2 - d1).days)
+    def days_between(self, d1, d2):
+        return abs((d2 - d1).days) > 0
 
-def numMinutesBetween(d1, d2):
-    return abs((d2 - d1).minutes)
+    def numDaysBetween(self, d1, d2):
+        return abs((d2 - d1).days)
 
-def dataAtual():
-    return datetime.utcnow() #Usar UTC
+    def numMinutesBetween(self, d1, d2):
+        return abs((d2 - d1).minutes)
 
-def convertDateToStr(d):
-    return datetime.strptime(d, '%Y-%m-%dT%H:%M:%SZ').strftime('%Y-%m-%d')
+    def dataAtual(self):
+        return datetime.utcnow() #Usar UTC
 
-def convertDateToStr2(d):
-    return datetime.strptime(d, '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d')
+    def convertDateToStr(self, d):
+        return datetime.strptime(d, '%Y-%m-%dT%H:%M:%SZ').strftime('%Y-%m-%d')
 
-def convertStrToDate(d):
-    return datetime.strptime(d, '%Y-%m-%dT%H:%M:%SZ')
+    def convertDateToStr2(self, d):
+        return datetime.strptime(d, '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d')
 
-def convertStrToDateFull(d):
-    return datetime.strptime(d, '%Y-%m-%dT%H:%M:%S.000Z')
+    def convertStrToDate(self, d):
+        return datetime.strptime(d, '%Y-%m-%dT%H:%M:%SZ')
 
-def rangeDates(dt ,numDays):
-    return [x.strftime("%Y-%m-%d") for x in pd.date_range(dt, periods=numDays).to_pydatetime().tolist()]
+    def convertStrToDateFull(self, d):
+        return datetime.strptime(d, '%Y-%m-%dT%H:%M:%S.000Z')
 
-def rangeMinutes(dt_ini ,dt_fin):
-    return [x for x in pd.date_range(dt_ini, dt_fin, freq="1min").to_pydatetime().tolist()]
+    def rangeDates(self, dt ,numDays):
+        return [x.strftime("%Y-%m-%d") for x in pd.date_range(dt, periods=numDays).to_pydatetime().tolist()]
 
-def addDays(dt, numDays):
-    return (datetime.strptime(dt, '%Y-%m-%d') + timedelta(days=numDays)).strftime("%Y-%m-%d")
+    def rangeMinutes(self, dt_ini ,dt_fin):
+        return [x for x in pd.date_range(dt_ini, dt_fin, freq="1min").to_pydatetime().tolist()]
 
-def addDaysDateFull(dt, numDays):
-    return (datetime.strptime(dt, '%Y-%m-%dT%H:%M:%S.000Z') + timedelta(days=numDays)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    def addDays(self, dt, numDays):
+        return (datetime.strptime(dt, '%Y-%m-%d') + timedelta(days=numDays)).strftime("%Y-%m-%d")
 
-def addMinutesDateStr(dt, numMinutes):
-    return (datetime.strptime(dt+'T00:00:00.000Z', '%Y-%m-%dT%H:%M:%S.000Z') + timedelta(minutes=numMinutes)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    def addDaysDateFull(self, dt, numDays):
+        return (datetime.strptime(dt, '%Y-%m-%dT%H:%M:%S.000Z') + timedelta(days=numDays)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
-def addMinutesDate(dt, numMinutes):
-    return (dt + timedelta(minutes=numMinutes)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    def addMinutesDateStr(self, dt, numMinutes):
+        return (datetime.strptime(dt+'T00:00:00.000Z', '%Y-%m-%dT%H:%M:%S.000Z') + timedelta(minutes=numMinutes)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
+    def addMinutesDate(self, dt, numMinutes):
+        return (dt + timedelta(minutes=numMinutes)).strftime("%Y-%m-%dT%H:%M:%S.000Z")

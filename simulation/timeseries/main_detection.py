@@ -52,6 +52,8 @@ for message in consumer:
 
     model_uri = db_mem.getModel(hashutils.gerarHash(json.dumps(message)), index)
 
+    elk = put_elastic.ManagerElastic()
+
     print('Model: {}'.format(model_uri))
 
     try:
@@ -66,12 +68,12 @@ for message in consumer:
 
         if(metric < limite_inferior):
             envio = alarm.generateAlarm(metric, valor_esperado, limite_inferior, data, message)
-            put_elastic.sendBulkElastic(envio)
+            elk.sendBulkElastic(envio)
             print('Anomolia gerada: {}'.format(envio))
 
         if(metric > limite_superior):
             envio = alarm.generateAlarm(metric, valor_esperado, limite_superior, data, message)
-            put_elastic.sendBulkElastic(envio)
+            elk.sendBulkElastic(envio)
             print('Anomolia gerada: {}'.format(envio))
     except:
         print("Erro na carga do modelo")

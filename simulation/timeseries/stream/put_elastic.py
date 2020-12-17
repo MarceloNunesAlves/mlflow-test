@@ -3,34 +3,37 @@ from elasticsearch import Elasticsearch
 import http.client
 import os
 
-url     = os.environ.get('URL_ELK', 'localhost:9200')     #export URL_ELK=localhost:9200
-user    = os.environ.get('USER_ELK')    #export USER_ELK=None
-senha   = os.environ.get('PWD_ELK')     #export PWD_ELK=None
+class ManagerElastic():
 
-def sendDataElastic(envio, index):
-    es = None
-    if(user and senha):
-        es = Elasticsearch(['https://'+url], http_auth=(user, senha))
-    else:
-        es = Elasticsearch(['http://' + url])
+    def __init__(self):
+        self.url     = os.environ.get('URL_ELK', 'localhost:9200')     #export URL_ELK=localhost:9200
+        self.user    = os.environ.get('USER_ELK')    #export USER_ELK=None
+        self.senha   = os.environ.get('PWD_ELK')     #export PWD_ELK=None
 
-    res = es.index(index=index, body=envio)
-    return res
+    def sendDataElastic(self, envio, index):
+        es = None
+        if(self.user and self.senha):
+            es = Elasticsearch(['https://'+ self.url], http_auth=(self.user, self.senha))
+        else:
+            es = Elasticsearch(['http://' + self.url])
 
-def sendBulkElastic(envio):
-    params = envio
-    headers = httputils.setHeaders("application/x-ndjson")
+        res = es.index(index=index, body=envio)
+        return res
 
-    conn = None
-    if (user and senha):
-        conn = http.client.HTTPSConnection(url)
-    else:
-        conn = http.client.HTTPConnection(url)
+    def sendBulkElastic(self, envio):
+        params = envio
+        headers = httputils.setHeaders("application/x-ndjson")
 
-    conn.request("POST", "/_bulk", params, headers)
+        conn = None
+        if (self.user and self.senha):
+            conn = http.client.HTTPSConnection(self.url)
+        else:
+            conn = http.client.HTTPConnection(self.url)
 
-    response = conn.getresponse()
+        conn.request("POST", "/_bulk", params, headers)
 
-    print('Status do Elasticsearch -> ' + str(response.status) + ' - ' + response.reason)
+        response = conn.getresponse()
 
-    conn.close()
+        print('Status do Elasticsearch -> ' + str(response.status) + ' - ' + response.reason)
+
+        conn.close()
